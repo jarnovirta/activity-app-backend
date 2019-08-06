@@ -5,13 +5,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = express_1.default();
-const port = 8080; // default port to listen
-// define a route handler for the default home page
-app.get("/", (req, res) => {
-    res.send("Hello world!");
+const body_parser_1 = __importDefault(require("body-parser"));
+const cors_1 = __importDefault(require("cors"));
+const http_1 = __importDefault(require("http"));
+const oauth_1 = require("./controllers/oauth");
+const config_1 = __importDefault(require("./utils/config"));
+/* mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
+    .then( () => {
+        console.log('connected to database', config.mongoUrl)
+    })
+    .catch( err => {
+        console.log(err)
+    }) */
+app.use(cors_1.default());
+app.use(body_parser_1.default.json());
+app.use(express_1.default.static("build"));
+app.use("/api/oauth", oauth_1.router);
+const server = http_1.default.createServer(app);
+server.listen(config_1.default.port, () => {
+    console.log(`Server running on port ${config_1.default.port}`);
 });
-// start the Express server
-app.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`);
-});
+/* server.on('close', () => {
+    mongoose.connection.close()
+}) */
+module.exports = {
+    app, server
+};
 //# sourceMappingURL=index.js.map

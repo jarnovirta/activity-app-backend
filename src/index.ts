@@ -1,13 +1,36 @@
 import express from "express";
 const app = express();
-const port = 8080; // default port to listen
+import bodyParser from "body-parser";
+import cors from "cors";
+import http from "http";
+import mongoose from "mongoose";
+import { router as oauthRouter} from "./controllers/oauth";
+import config from "./utils/config";
 
-// define a route handler for the default home page
-app.get( "/", ( req, res ) => {
-    res.send( "Hello world!" );
-} );
+/* mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
+    .then( () => {
+        console.log('connected to database', config.mongoUrl)
+    })
+    .catch( err => {
+        console.log(err)
+    }) */
 
-// start the Express server
-app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
-} );
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static("build"));
+
+app.use("/api/oauth", oauthRouter);
+
+const server = http.createServer(app);
+
+server.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
+
+});
+/* server.on('close', () => {
+    mongoose.connection.close()
+}) */
+
+module.exports = {
+    app, server
+};
