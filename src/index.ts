@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
 import mongoose from "mongoose";
-import { router as oauthRouter} from "./controllers/oauth"
+import oauthRouter from "./controllers/oauth"
+import userRouter from "./controllers/users"
 import config from "./utils/config"
 
 mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
@@ -19,6 +20,7 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static("build"))
 app.use("/api/oauth", oauthRouter)
+app.use("/api/users", userRouter)
 
 const server = http.createServer(app)
 

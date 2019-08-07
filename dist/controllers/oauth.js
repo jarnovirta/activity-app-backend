@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-exports.router = router;
 router.get("/authCode/:userId", (request, response) => {
     const code = request.query.code;
     console.log("user id: ", request.params.userId);
@@ -23,4 +22,5 @@ router.get("/redirectUrl", (request, response) => {
     console.log("redirectUrl", url);
     response.send(url);
 });
+exports.default = router;
 //# sourceMappingURL=oauth.js.map

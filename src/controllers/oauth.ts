@@ -18,6 +18,4 @@ router.get("/redirectUrl", (request, response) => {
   console.log("redirectUrl", url)
   response.send(url)
 })
-export {
-    router
-}
+export default router
