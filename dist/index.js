@@ -8,15 +8,16 @@ const app = express_1.default();
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const http_1 = __importDefault(require("http"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const oauth_1 = require("./controllers/oauth");
 const config_1 = __importDefault(require("./utils/config"));
-/* mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
-    .then( () => {
-        console.log('connected to database', config.mongoUrl)
-    })
-    .catch( err => {
-        console.log(err)
-    }) */
+mongoose_1.default.connect(config_1.default.mongoUrl, { useNewUrlParser: true })
+    .then(() => {
+    console.log("connected to database", config_1.default.mongoUrl);
+})
+    .catch((err) => {
+    console.log(err);
+});
 app.use(cors_1.default());
 app.use(body_parser_1.default.json());
 app.use(express_1.default.static("build"));
@@ -25,9 +26,9 @@ const server = http_1.default.createServer(app);
 server.listen(config_1.default.port, () => {
     console.log(`Server running on port ${config_1.default.port}`);
 });
-/* server.on('close', () => {
-    mongoose.connection.close()
-}) */
+server.on("close", () => {
+    mongoose_1.default.connection.close();
+});
 module.exports = {
     app, server
 };
