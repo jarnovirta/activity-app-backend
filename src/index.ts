@@ -15,13 +15,13 @@ import config from "./utils/config";
         console.log(err)
     }) */
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static("build"));
+app.use(cors())
+app.use(bodyParser.json())
+app.use(express.static("build"))
 
-app.use("/api/oauth", oauthRouter);
+app.use("/api/oauth", oauthRouter)
 
-const server = http.createServer(app);
+const server = http.createServer(app)
 
 server.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
