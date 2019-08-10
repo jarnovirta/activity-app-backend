@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-// TODO: validation
 const UserSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     passwordHash: { type: String, required: true },
     stravaAccessToken: { type: String, required: false },
     stravaRefreshToken: { type: String, required: false },
@@ -11,8 +11,9 @@ const UserSchema = new mongoose_1.Schema({
 });
 UserSchema.statics.format = (user) => {
     return {
+        firstName: user.firstName,
         id: user._id,
-        name: user.name,
+        lastName: user.lastName,
         stravaAccessToken: user.stravaAccessToken,
         username: user.username
     };

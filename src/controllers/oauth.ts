@@ -21,10 +21,8 @@ router.get("/authCode/:userId", async (request, response) => {
   const devFrontServer = process.env.DEV_FRONT_SERVER_URL
   const redirectUrl = devFrontServer ? devFrontServer : "/"
   const tokens = await getStravaTokens(code)
-  console.log("tokens", tokens)
   const user = getUser(tokens)
-  console.log("Strava user", user)
-  console.log("Redirecting")
+
   response.redirect(redirectUrl)
 })
 
@@ -38,7 +36,8 @@ router.get("/redirectUrl", (request, response) => {
 
 const getUser = (stravaTokenResponse: any): IUser => {
   return {
-    name: stravaTokenResponse.athlete.firstname,
+    firstName: stravaTokenResponse.athlete.firstname,
+    lastName: stravaTokenResponse.athlete.lastname,
     stravaAccessToken: stravaTokenResponse.access_token,
     stravaRefreshToken: stravaTokenResponse.refresh_token,
     username: stravaTokenResponse.athlete.username

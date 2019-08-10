@@ -2,8 +2,9 @@ import { Document, Model, model, Schema } from "mongoose"
 import IUser from "./../interfaces/IUser"
 
 interface IUserDocument extends Document {
-  name: string,
-  passwordHash: string,
+  firstName: string,
+  lastName: string,
+  passwordHash?: string,
   stravaAccessToken: string,
   stravaRefreshToken: string,
   username: string
@@ -12,9 +13,10 @@ interface IUserDocument extends Document {
 interface IUserModel extends Model<IUserDocument> {
   format(user: IUserDocument): IUser
 }
-// TODO: validation
+
 const UserSchema: Schema = new Schema({
-  name: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   passwordHash: { type: String, required: true },
   stravaAccessToken: { type: String, required: false },
   stravaRefreshToken: { type: String, required: false },
@@ -23,8 +25,9 @@ const UserSchema: Schema = new Schema({
 
 UserSchema.statics.format = (user: IUserDocument) => {
   return {
+    firstName: user.firstName,
     id: user._id,
-    name: user.name,
+    lastName: user.lastName,
     stravaAccessToken: user.stravaAccessToken,
     username: user.username
   }

@@ -1,5 +1,6 @@
 export default interface IUser {
-  name: string,
+  firstName: string,
+  lastName: string,
   username: string,
   passwordHash?: string,
   stravaAccessToken?: string,

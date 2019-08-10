@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("./../models/user"));
 router.get("/", (request, response) => __awaiter(this, void 0, void 0, function* () {
     try {
@@ -29,9 +30,17 @@ router.post("/", (request, response) => __awaiter(this, void 0, void 0, function
     console.log("posting user");
     console.log(request.body);
     try {
-        let user = new user_1.default(request.body);
-        user = yield user.save();
-        response.status(201).json(user_1.default.format(user));
+        const saltRounds = 10;
+        const passwordHash = yield bcrypt_1.default.hash(request.body.password, saltRounds);
+        const user = {
+            firstName: request.body.firstName,
+            lastName: request.body.lastName,
+            passwordHash,
+            username: request.body.username
+        };
+        const mongoUser = new user_1.default(user);
+        const savedUser = yield mongoUser.save();
+        response.status(201).json(user_1.default.format(savedUser));
     }
     catch (e) {
         console.log(e);
