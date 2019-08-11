@@ -1,7 +1,9 @@
 import express from "express"
 const router = express.Router()
 import axios from "axios"
-import IUser from "./../interfaces/IUser"
+import IUser from "../interfaces/IUser"
+import { IUserDocument } from "../models/user"
+import UserModel from "../models/user"
 
 const getStravaTokens = async (code: string): Promise<any> => {
   const url = "https://www.strava.com/oauth/token"
@@ -19,18 +21,21 @@ const getStravaTokens = async (code: string): Promise<any> => {
 router.get("/authCode/:userId", async (request, response) => {
   const code = request.query.code
   const devFrontServer = process.env.DEV_FRONT_SERVER_URL
-  const redirectUrl = devFrontServer ? devFrontServer : "/"
   const tokens = await getStravaTokens(code)
-  const user = getUser(tokens)
-
+  const stravaUser: IUser = getUser(tokens)
+  await UserModel.updateOne({ _id: request.params.userId }, {
+    stravaAccessToken: stravaUser.stravaAccessToken,
+    stravaRefreshToken: stravaUser.stravaRefreshToken
+  })
+  const redirectUrl = devFrontServer ? devFrontServer : "/"
   response.redirect(redirectUrl)
 })
 
 router.get("/redirectUrl", (request, response) => {
-  console.log("Got request for redirectUrl")
+
   const MOCK_USER_ID = 1234567
   const url = `${process.env.SERVER_URL}:${process.env.PORT}`
-    + `/api/oauth/authCode/${MOCK_USER_ID}`
+    + `/api/oauth/authCode`
   response.send(url)
 })
 
