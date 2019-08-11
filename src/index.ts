@@ -4,15 +4,16 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
 import mongoose from "mongoose";
+import loginRouter from "./controllers/login"
 import oauthRouter from "./controllers/oauth"
 import userRouter from "./controllers/users"
 import config from "./utils/config"
 
 mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
-    .then( () => {
+    .then(() => {
         console.log("connected to database", config.mongoUrl)
     })
-    .catch( (err) => {
+    .catch((err) => {
         console.log(err)
     })
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json())
 app.use(express.static("build"))
 app.use("/api/oauth", oauthRouter)
 app.use("/api/users", userRouter)
+app.use("/api/login", loginRouter)
 
 const server = http.createServer(app)
 
