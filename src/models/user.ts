@@ -1,12 +1,12 @@
 import { Document, Model, model, Schema } from "mongoose"
+import IStravaToken from "./../interfaces/IStravaToken"
 import IUser from "./../interfaces/IUser"
 
 export interface IUserDocument extends Document {
   firstName: string,
   lastName: string,
   passwordHash?: string,
-  stravaAccessToken: string,
-  stravaRefreshToken: string,
+  stravaToken: IStravaToken,
   username: string
 }
 
@@ -18,8 +18,7 @@ const UserSchema: Schema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   passwordHash: { type: String, required: true },
-  stravaAccessToken: { type: String, required: false },
-  stravaRefreshToken: { type: String, required: false },
+  stravaToken: { type: Object, required: false },
   username: { type: String, required: true, unique: true }
 })
 
@@ -28,7 +27,7 @@ UserSchema.statics.format = (user: IUserDocument) => {
     firstName: user.firstName,
     id: user._id,
     lastName: user.lastName,
-    stravaAccessToken: user.stravaAccessToken,
+    stravaToken: { ...user.stravaToken, refreshToken: "" },
     username: user.username
   }
 }

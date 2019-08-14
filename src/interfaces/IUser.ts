@@ -1,3 +1,5 @@
+import StravaToken from "./IStravaToken";
+
 export default interface IUser {
   firstName: string,
   id?: number,
@@ -5,6 +7,5 @@ export default interface IUser {
   loginToken?: string,
   username: string,
   passwordHash?: string,
-  stravaAccessToken?: string,
-  stravaRefreshToken?: string
+  stravaToken?: StravaToken
 }

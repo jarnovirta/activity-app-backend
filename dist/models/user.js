@@ -5,8 +5,7 @@ const UserSchema = new mongoose_1.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     passwordHash: { type: String, required: true },
-    stravaAccessToken: { type: String, required: false },
-    stravaRefreshToken: { type: String, required: false },
+    stravaToken: { type: Object, required: false },
     username: { type: String, required: true, unique: true }
 });
 UserSchema.statics.format = (user) => {
@@ -14,7 +13,7 @@ UserSchema.statics.format = (user) => {
         firstName: user.firstName,
         id: user._id,
         lastName: user.lastName,
-        stravaAccessToken: user.stravaAccessToken,
+        stravaToken: Object.assign({}, user.stravaToken, { refreshToken: "" }),
         username: user.username
     };
 };
