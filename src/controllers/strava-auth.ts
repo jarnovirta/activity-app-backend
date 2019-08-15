@@ -53,10 +53,10 @@ router.get("/redirectUrl", (request, response) => {
 router.post("/refreshToken", async (request, response) => {
   const user: IUserDocument = await UserModel.findById(request.body.userId)
   const token: IStravaToken = await refreshStravaTokens(user.stravaToken.refreshToken)
-  await user.update({
+  await user.updateOne({
     stravaToken: token
   })
-  response.status(200).json(user)
+  response.status(200).json(user.stravaToken)
 })
 
 const getUser = (stravaTokenResponse: any): IUser => {

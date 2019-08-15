@@ -60,10 +60,10 @@ router.get("/redirectUrl", (request, response) => {
 router.post("/refreshToken", (request, response) => __awaiter(this, void 0, void 0, function* () {
     const user = yield user_1.default.findById(request.body.userId);
     const token = yield refreshStravaTokens(user.stravaToken.refreshToken);
-    yield user.update({
+    yield user.updateOne({
         stravaToken: token
     });
-    response.status(200).json(user);
+    response.status(200).json(user.stravaToken);
 }));
 const getUser = (stravaTokenResponse) => {
     return {
