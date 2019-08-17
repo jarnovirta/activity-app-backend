@@ -4,7 +4,7 @@ import connectRedis from "connect-redis"
 import session from "express-session"
 import redis from "redis"
 const redisStore = connectRedis(session)
-const client = redis.createClient();
+
 import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
@@ -13,6 +13,8 @@ import loginRouter from "./controllers/login"
 import stravaAuthRouter from "./controllers/strava-auth"
 import userRouter from "./controllers/users"
 import config from "./utils/config"
+
+
 
 mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
     .then(() => {
@@ -26,11 +28,12 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("build"))
-client.on("error", (err) => {
+
+const redisClient = redis.createClient(config.redisUrl)
+redisClient.on("error", (err) => {
     console.log(err)
     process.exit(1)
 })
-console.log("\n**** CONNECTING TO REDIS ON url", config.redisUrl)
 app.use(session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000
@@ -40,8 +43,9 @@ app.use(session({
     secret: config.secret,
 
     store: new redisStore({
-        client,
-        url: config.redisUrl,
+        client: redisClient,
+        host: "localhost",
+        port: 6379,
         ttl: 260
     })
 }))

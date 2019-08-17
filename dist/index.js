@@ -9,7 +9,6 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const express_session_1 = __importDefault(require("express-session"));
 const redis_1 = __importDefault(require("redis"));
 const redisStore = connect_redis_1.default(express_session_1.default);
-const client = redis_1.default.createClient();
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const http_1 = __importDefault(require("http"));
@@ -29,7 +28,8 @@ app.use(cors_1.default());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static("build"));
-client.on("error", (err) => {
+const redisClient = redis_1.default.createClient(config_1.default.redisUrl);
+redisClient.on("error", (err) => {
     console.log(err);
     process.exit(1);
 });
@@ -41,8 +41,9 @@ app.use(express_session_1.default({
     saveUninitialized: false,
     secret: config_1.default.secret,
     store: new redisStore({
-        client,
-        url: config_1.default.redisUrl,
+        client: redisClient,
+        host: "localhost",
+        port: 6379,
         ttl: 260
     })
 }));
