@@ -42,8 +42,7 @@ app.use(express_session_1.default({
     secret: config_1.default.secret,
     store: new redisStore({
         client: redisClient,
-        host: "localhost",
-        port: 6379,
+        url: config_1.default.redisUrl,
         ttl: 260
     })
 }));

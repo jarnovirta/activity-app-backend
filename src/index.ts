@@ -44,8 +44,7 @@ app.use(session({
 
     store: new redisStore({
         client: redisClient,
-        host: "localhost",
-        port: 6379,
+        url: config.redisUrl,
         ttl: 260
     })
 }))
