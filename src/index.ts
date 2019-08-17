@@ -30,6 +30,7 @@ client.on("error", (err) => {
     console.log(err)
     process.exit(1)
 })
+console.log("\n**** CONNECTING TO REDIS ON url", config.redisUrl)
 app.use(session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000
