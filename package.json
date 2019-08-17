@@ -22,7 +22,13 @@
   },
   "homepage": "https://github.com/jarnovirta/activity-app-backend#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "@types/bcrypt": "^3.0.0",
+    "@types/connect-redis": "0.0.10",
+    "@types/express-session": "^1.15.13",
+    "bcrypt": "^3.0.6",
+    "connect-redis": "^3.4.2",
+    "express": "^4.16.4",
+    "express-session": "^1.16.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.5",
