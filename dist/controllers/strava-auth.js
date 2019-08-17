@@ -15,32 +15,7 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const axios_1 = __importDefault(require("axios"));
 const user_1 = __importDefault(require("../models/user"));
-const stravaTokenUrl = "https://www.strava.com/oauth/token";
-const getStravaTokens = (code) => __awaiter(this, void 0, void 0, function* () {
-    const params = {
-        client_id: process.env.STRAVA_CLIENT_ID,
-        client_secret: process.env.STRAVA_CLIENT_SECRET,
-        code,
-        grant_type: "authorization_code"
-    };
-    const response = yield axios_1.default.post(stravaTokenUrl, params);
-    return response.data;
-});
-const refreshStravaTokens = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
-    const params = {
-        client_id: process.env.STRAVA_CLIENT_ID,
-        client_secret: process.env.STRAVA_CLIENT_SECRET,
-        grant_type: "refresh_token",
-        refresh_token: refreshToken
-    };
-    const response = yield axios_1.default.post(stravaTokenUrl, params);
-    const token = {
-        accessToken: response.data.access_token,
-        expiresAt: response.data.expires_at,
-        refreshToken: response.data.refresh_token
-    };
-    return token;
-});
+const stravaApiTokenUrl = "https://www.strava.com/oauth/token";
 router.get("/authCode/:userId", (request, response) => __awaiter(this, void 0, void 0, function* () {
     const code = request.query.code;
     const devFrontServer = process.env.DEV_FRONT_SERVER_URL;
@@ -77,5 +52,30 @@ const getUser = (stravaTokenResponse) => {
         username: stravaTokenResponse.athlete.username
     };
 };
+const getStravaTokens = (code) => __awaiter(this, void 0, void 0, function* () {
+    const params = {
+        client_id: process.env.STRAVA_CLIENT_ID,
+        client_secret: process.env.STRAVA_CLIENT_SECRET,
+        code,
+        grant_type: "authorization_code"
+    };
+    const response = yield axios_1.default.post(stravaApiTokenUrl, params);
+    return response.data;
+});
+const refreshStravaTokens = (refreshToken) => __awaiter(this, void 0, void 0, function* () {
+    const params = {
+        client_id: process.env.STRAVA_CLIENT_ID,
+        client_secret: process.env.STRAVA_CLIENT_SECRET,
+        grant_type: "refresh_token",
+        refresh_token: refreshToken
+    };
+    const response = yield axios_1.default.post(stravaApiTokenUrl, params);
+    const token = {
+        accessToken: response.data.access_token,
+        expiresAt: response.data.expires_at,
+        refreshToken: response.data.refresh_token
+    };
+    return token;
+});
 exports.default = router;
 //# sourceMappingURL=strava-auth.js.map

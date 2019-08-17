@@ -6,32 +6,7 @@ import { IUserDocument } from "../models/user"
 import UserModel from "../models/user"
 import IStravaToken from "./../interfaces/IStravaToken";
 
-const stravaTokenUrl = "https://www.strava.com/oauth/token"
-const getStravaTokens = async (code: string): Promise<any> => {
-  const params = {
-    client_id: process.env.STRAVA_CLIENT_ID,
-    client_secret: process.env.STRAVA_CLIENT_SECRET,
-    code,
-    grant_type: "authorization_code"
-  }
-  const response = await axios.post(stravaTokenUrl, params)
-  return response.data
-}
-const refreshStravaTokens = async (refreshToken: string): Promise<IStravaToken> => {
-  const params = {
-    client_id: process.env.STRAVA_CLIENT_ID,
-    client_secret: process.env.STRAVA_CLIENT_SECRET,
-    grant_type: "refresh_token",
-    refresh_token: refreshToken
-  }
-  const response = await axios.post(stravaTokenUrl, params)
-  const token = {
-    accessToken: response.data.access_token,
-    expiresAt: response.data.expires_at,
-    refreshToken: response.data.refresh_token
-  }
-  return token
-}
+const stravaApiTokenUrl = "https://www.strava.com/oauth/token"
 
 router.get("/authCode/:userId", async (request, response) => {
   const code = request.query.code
@@ -70,6 +45,31 @@ const getUser = (stravaTokenResponse: any): IUser => {
     },
     username: stravaTokenResponse.athlete.username
   }
+}
+const getStravaTokens = async (code: string): Promise<any> => {
+  const params = {
+    client_id: process.env.STRAVA_CLIENT_ID,
+    client_secret: process.env.STRAVA_CLIENT_SECRET,
+    code,
+    grant_type: "authorization_code"
+  }
+  const response = await axios.post(stravaApiTokenUrl, params)
+  return response.data
+}
+const refreshStravaTokens = async (refreshToken: string): Promise<IStravaToken> => {
+  const params = {
+    client_id: process.env.STRAVA_CLIENT_ID,
+    client_secret: process.env.STRAVA_CLIENT_SECRET,
+    grant_type: "refresh_token",
+    refresh_token: refreshToken
+  }
+  const response = await axios.post(stravaApiTokenUrl, params)
+  const token = {
+    accessToken: response.data.access_token,
+    expiresAt: response.data.expires_at,
+    refreshToken: response.data.refresh_token
+  }
+  return token
 }
 
 export default router

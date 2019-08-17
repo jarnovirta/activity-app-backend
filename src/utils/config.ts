@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 
 let port = process.env.PORT
 const mongoUrl = process.env.MONGODB_URI
+const secret = process.env.SECRET
 
 if (process.env.NODE_ENV === "test") {
     port = process.env.TEST_PORT
@@ -15,5 +16,6 @@ if (process.env.NODE_ENV === "test") {
 
 export default {
     mongoUrl,
-    port
+    port,
+    secret
   }

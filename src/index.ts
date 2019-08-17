@@ -1,5 +1,10 @@
 import express from "express";
 const app = express();
+import connectRedis from "connect-redis"
+import session from "express-session"
+import redis from "redis"
+const redisStore = connectRedis(session)
+const client = redis.createClient();
 import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
@@ -19,7 +24,27 @@ mongoose.connect(config.mongoUrl, { useNewUrlParser: true })
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("build"))
+client.on("error", (err) => {
+    console.log(err)
+    process.exit(1)
+})
+app.use(session({
+    cookie: {
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      },
+    resave: false,
+    saveUninitialized: false,
+    secret: config.secret,
+
+    store: new redisStore({
+        client,
+        host: "localhost",
+        port: 6379,
+        ttl: 260
+    })
+}))
 app.use("/api/stravaauth", stravaAuthRouter)
 app.use("/api/users", userRouter)
 app.use("/api/login", loginRouter)
