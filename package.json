@@ -4,9 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
+    "postinstall":"tsc",
     "start": "node dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --watch src --exec 'npm start' -e ts"
