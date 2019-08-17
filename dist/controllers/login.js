@@ -31,8 +31,8 @@ router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
         if (!(correctCreds)) {
             return res.status(401).json({ error: "invalid username or password" });
         }
-        req.session.username = req.body.username;
-        res.sendStatus(200);
+        req.session.userId = user.id;
+        res.status(200).json(user);
     }
     catch (e) {
         console.log(e);
@@ -40,22 +40,22 @@ router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
     }
 }));
 router.get("/currentUser", (req, res) => __awaiter(this, void 0, void 0, function* () {
-    console.log(req.session);
-    if (req.session.username) {
+    if (req.session.userId) {
         const loggedInUser = yield user_1.default.findOne({
-            username: req.session.username
+            _id: req.session.userId
         });
         res.status(200).json(user_1.default.format(loggedInUser));
         return;
     }
     res.status(401).json({ message: "User not logged in" });
 }));
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return console.log(err);
         }
     });
+    res.sendStatus(200);
 });
 exports.default = router;
 //# sourceMappingURL=login.js.map

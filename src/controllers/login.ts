@@ -21,29 +21,29 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: "invalid username or password" })
     }
 
-    req.session.username = req.body.username
-    res.sendStatus(200)
+    req.session.userId = user.id
+    res.status(200).json(user)
   } catch (e) {
     console.log(e)
     res.status(500).json({ error: "something went wrong..." })
   }
 })
 router.get("/currentUser", async (req, res) => {
-  console.log(req.session)
-  if (req.session.username) {
+  if (req.session.userId) {
     const loggedInUser: IUserDocument = await User.findOne({
-      username: req.session.username
+      _id: req.session.userId
     })
     res.status(200).json(User.format(loggedInUser))
     return
   }
   res.status(401).json({ message: "User not logged in" })
 })
-router.get("/logout", (req, res) => {
+router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
       if (err) {
           return console.log(err);
       }
   })
+  res.sendStatus(200)
 })
 export default router
