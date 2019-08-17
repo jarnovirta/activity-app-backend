@@ -7,6 +7,7 @@ if (process.env.NODE_ENV !== "production") {
 let port = process.env.PORT
 const mongoUrl = process.env.MONGODB_URI
 const secret = process.env.SECRET
+const redisUrl = process.env.REDIS_URL
 
 if (process.env.NODE_ENV === "test") {
     port = process.env.TEST_PORT
@@ -17,5 +18,6 @@ if (process.env.NODE_ENV === "test") {
 export default {
     mongoUrl,
     port,
-    secret
+    secret,
+    redisUrl
   }
