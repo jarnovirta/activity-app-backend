@@ -7,7 +7,7 @@
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "postinstall":"tsc",
+    "postinstall": "tsc",
     "start": "node dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon --watch src --exec 'npm start' -e ts"
@@ -25,12 +25,16 @@
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/connect-redis": "0.0.10",
+    "@types/cors": "^2.8.5",
     "@types/express-session": "^1.15.13",
+    "@types/mongoose": "^5.5.12",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.6",
     "connect-redis": "^3.4.2",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-session": "^1.16.2",
+    "mongoose": "^5.6.9",
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
