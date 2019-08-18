@@ -46,16 +46,15 @@ app.use(session({
     })
 }))
 
-
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('build'))
+app.use(express.static('front'))
 app.use('/api/stravaauth', stravaAuthRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../front', 'index.html'));
+    res.sendFile(path.resolve(__dirname, './../front', 'index.html'));
 })
 const server = http.createServer(app)
 

@@ -21,7 +21,7 @@ router.get('/authCode/:userId', (request, response) => __awaiter(this, void 0, v
     const devFrontServer = process.env.DEV_FRONT_SERVER_URL;
     const tokens = yield getStravaTokens(code);
     const stravaUser = getUser(tokens);
-    yield user_1.default.updateOne({ _id: request.params.userId }, {
+    yield user_1.default.updateOne({ _id: request.query.userId }, {
         stravaToken: stravaUser.stravaToken
     });
     const redirectUrl = devFrontServer ? devFrontServer : '/';

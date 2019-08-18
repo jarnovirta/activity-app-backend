@@ -50,12 +50,12 @@ app.use(express_session_1.default({
 app.use(cors_1.default());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.use(express_1.default.static('build'));
+app.use(express_1.default.static('front'));
 app.use('/api/stravaauth', strava_auth_1.default);
 app.use('/api/users', users_1.default);
 app.use('/api/login', login_1.default);
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, '../front', 'index.html'));
+    res.sendFile(path_1.default.resolve(__dirname, './../front', 'index.html'));
 });
 const server = http_1.default.createServer(app);
 server.listen(config_1.default.port, () => {
