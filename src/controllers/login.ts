@@ -1,12 +1,12 @@
-import express from "express"
+import express from 'express'
 const router = express.Router()
-import bcrypt from "bcrypt"
-import IUser from "./../interfaces/IUser"
+import bcrypt from 'bcrypt'
+import IUser from './../interfaces/IUser'
 
-import User, { IUserDocument } from "./../models/user"
+import User, { IUserDocument } from './../models/user'
 
-router.post("/", async (req, res) => {
-  console.log("Logging in user")
+router.post('/', async (req, res) => {
+  console.log('Logging in user')
   console.log(req.session)
   try {
     const existingUser: IUserDocument = await User.findOne({ username: req.body.username })
@@ -18,17 +18,17 @@ router.post("/", async (req, res) => {
       await bcrypt.compare(req.body.password, validPasswordHash)
 
     if (!(correctCreds)) {
-      return res.status(401).json({ error: "invalid username or password" })
+      return res.status(401).json({ error: 'invalid username or password' })
     }
 
     req.session.userId = user.id
     res.status(200).json(user)
   } catch (e) {
     console.log(e)
-    res.status(500).json({ error: "something went wrong..." })
+    res.status(500).json({ error: 'something went wrong...' })
   }
 })
-router.get("/currentUser", async (req, res) => {
+router.get('/currentUser', async (req, res) => {
   if (req.session.userId) {
     const loggedInUser: IUserDocument = await User.findOne({
       _id: req.session.userId
@@ -36,9 +36,9 @@ router.get("/currentUser", async (req, res) => {
     res.status(200).json(User.format(loggedInUser))
     return
   }
-  res.status(401).json({ message: "User not logged in" })
+  res.status(401).json({ message: 'User not logged in' })
 })
-router.post("/logout", (req, res) => {
+router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
       if (err) {
           return console.log(err);

@@ -15,8 +15,8 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("./../models/user"));
-router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
-    console.log("Logging in user");
+router.post('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+    console.log('Logging in user');
     console.log(req.session);
     try {
         const existingUser = yield user_1.default.findOne({ username: req.body.username });
@@ -29,17 +29,17 @@ router.post("/", (req, res) => __awaiter(this, void 0, void 0, function* () {
             false :
             yield bcrypt_1.default.compare(req.body.password, validPasswordHash);
         if (!(correctCreds)) {
-            return res.status(401).json({ error: "invalid username or password" });
+            return res.status(401).json({ error: 'invalid username or password' });
         }
         req.session.userId = user.id;
         res.status(200).json(user);
     }
     catch (e) {
         console.log(e);
-        res.status(500).json({ error: "something went wrong..." });
+        res.status(500).json({ error: 'something went wrong...' });
     }
 }));
-router.get("/currentUser", (req, res) => __awaiter(this, void 0, void 0, function* () {
+router.get('/currentUser', (req, res) => __awaiter(this, void 0, void 0, function* () {
     if (req.session.userId) {
         const loggedInUser = yield user_1.default.findOne({
             _id: req.session.userId
@@ -47,9 +47,9 @@ router.get("/currentUser", (req, res) => __awaiter(this, void 0, void 0, functio
         res.status(200).json(user_1.default.format(loggedInUser));
         return;
     }
-    res.status(401).json({ message: "User not logged in" });
+    res.status(401).json({ message: 'User not logged in' });
 }));
-router.post("/logout", (req, res) => {
+router.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return console.log(err);

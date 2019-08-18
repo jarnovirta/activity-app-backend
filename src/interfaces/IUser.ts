@@ -1,4 +1,4 @@
-import StravaToken from "./IStravaToken";
+import StravaToken from './IStravaToken';
 
 export default interface IUser {
   firstName: string,

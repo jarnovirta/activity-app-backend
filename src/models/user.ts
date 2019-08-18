@@ -1,6 +1,6 @@
-import { Document, Model, model, Schema } from "mongoose"
-import IStravaToken from "./../interfaces/IStravaToken"
-import IUser from "./../interfaces/IUser"
+import { Document, Model, model, Schema } from 'mongoose'
+import IStravaToken from './../interfaces/IStravaToken'
+import IUser from './../interfaces/IUser'
 
 export interface IUserDocument extends Document {
   firstName: string,
@@ -27,8 +27,8 @@ UserSchema.statics.format = (user: IUserDocument) => {
     firstName: user.firstName,
     id: user._id,
     lastName: user.lastName,
-    stravaToken: { ...user.stravaToken, refreshToken: "" },
+    stravaToken: { ...user.stravaToken, refreshToken: '' },
     username: user.username
   }
 }
-export default model<IUserDocument>("User", UserSchema) as IUserModel
+export default model<IUserDocument>('User', UserSchema) as IUserModel

@@ -15,7 +15,7 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("./../models/user"));
-router.get("/", (request, response) => __awaiter(this, void 0, void 0, function* () {
+router.get('/', (request, response) => __awaiter(this, void 0, void 0, function* () {
     try {
         const users = yield user_1.default.find({});
         const formatedUsers = users.map(user_1.default.format);
@@ -23,11 +23,11 @@ router.get("/", (request, response) => __awaiter(this, void 0, void 0, function*
     }
     catch (e) {
         console.log(e);
-        response.status(500).json({ error: "Something went wrong..." });
+        response.status(500).json({ error: 'Something went wrong...' });
     }
 }));
-router.post("/", (request, response) => __awaiter(this, void 0, void 0, function* () {
-    console.log("posting user");
+router.post('/', (request, response) => __awaiter(this, void 0, void 0, function* () {
+    console.log('posting user');
     console.log(request.body);
     try {
         const saltRounds = 10;
@@ -44,7 +44,7 @@ router.post("/", (request, response) => __awaiter(this, void 0, void 0, function
     }
     catch (e) {
         console.log(e);
-        response.status(500).json({ error: "something went wrong..." });
+        response.status(500).json({ error: 'something went wrong...' });
     }
 }));
 exports.default = router;

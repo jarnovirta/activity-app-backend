@@ -13,9 +13,9 @@ UserSchema.statics.format = (user) => {
         firstName: user.firstName,
         id: user._id,
         lastName: user.lastName,
-        stravaToken: Object.assign({}, user.stravaToken, { refreshToken: "" }),
+        stravaToken: Object.assign({}, user.stravaToken, { refreshToken: '' }),
         username: user.username
     };
 };
-exports.default = mongoose_1.model("User", UserSchema);
+exports.default = mongoose_1.model('User', UserSchema);
 //# sourceMappingURL=user.js.map
