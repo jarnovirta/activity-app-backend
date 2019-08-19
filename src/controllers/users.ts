@@ -14,25 +14,25 @@ router.get('/', async (request, response) => {
     response.status(500).json({ error: 'Something went wrong...' })
   }
 })
-router.post('/', async (request, response) => {
+router.post('/', async (req, res) => {
   console.log('posting user')
-  console.log(request.body)
+  console.log(req.body)
 
   try {
     const saltRounds = 10
-    const passwordHash = await bcrypt.hash(request.body.password, saltRounds)
+    const passwordHash = await bcrypt.hash(req.body.password, saltRounds)
     const user: IUser = {
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       passwordHash,
-      username: request.body.username
+      username: req.body.username
     }
     const mongoUser = new User(user)
-    const savedUser = await mongoUser.save()
-    response.status(201).json(User.format(savedUser))
+    const savedUser = await mongoUser.save()    
+    res.status(201).json(User.format(savedUser))
   } catch (e) {
     console.log(e)
-    response.status(500).json({ error: 'something went wrong...' })
+    res.status(500).json({ error: 'something went wrong...' })
   }
 })
 

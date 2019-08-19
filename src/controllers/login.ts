@@ -20,7 +20,6 @@ router.post('/', async (req, res) => {
     if (!(correctCreds)) {
       return res.status(401).json({ error: 'invalid username or password' })
     }
-
     req.session.userId = user.id
     res.status(200).json(user)
   } catch (e) {

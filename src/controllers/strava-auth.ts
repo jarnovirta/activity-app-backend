@@ -8,16 +8,25 @@ import IStravaToken from './../interfaces/IStravaToken';
 
 const stravaApiTokenUrl = 'https://www.strava.com/oauth/token'
 
-router.get('/authCode/:userId', async (request, response) => {
-  const code = request.query.code
+interface IReqParams {
+  userId: string
+}
+router.get('/authCode/:userId', async (req, res) => {  
+  const code = req.query.code
+  const id: string = (req.params as Partial<IReqParams>).userId
   const devFrontServer = process.env.DEV_FRONT_SERVER_URL
-  const tokens = await getStravaTokens(code)
-  const stravaUser: IUser = getUser(tokens)
-  await UserModel.updateOne({ _id: request.query.userId }, {
-    stravaToken: stravaUser.stravaToken
-  })
+  try {
+    const tokens = await getStravaTokens(code)
+    const stravaUser: IUser = getUser(tokens)  
+    await UserModel.updateOne({ _id: id }, {
+      stravaToken: stravaUser.stravaToken
+    })
+  }
+  catch (e) {
+    console.log(e)
+  }
   const redirectUrl = devFrontServer ? devFrontServer : '/'
-  response.redirect(redirectUrl)
+  res.redirect(redirectUrl)
 })
 
 router.get('/redirectUrl', (request, response) => {
