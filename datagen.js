@@ -66,7 +66,7 @@ const uploadActivity = (activityArray) => {
   const opts = {
     headers: {
       ContentType: 'application/json',
-      Authorization: 'Bearer 1294335c6b8d3f6e02316d8f7a05f36ee3fc7b76'
+      Authorization: 
     }
   }
   activityArray.forEach(
