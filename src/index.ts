@@ -1,5 +1,5 @@
-import express from 'express'
-const app = express();
+import express, { Application, Response, Request } from 'express'
+const app: Application = express()
 import connectRedis from 'connect-redis'
 import session from 'express-session'
 import redis from 'redis'
@@ -13,6 +13,7 @@ import loginRouter from './controllers/login'
 import stravaAuthRouter from './controllers/strava-auth'
 import userRouter from './controllers/users'
 import config from './utils/config'
+import { Http2Server } from 'http2';
 
 const mongooseOptions = { 
     useCreateIndex: true,
@@ -20,13 +21,13 @@ const mongooseOptions = {
  }
 mongoose.connect(config.mongoUrl, mongooseOptions)
     .then(() => {
-        console.log('connected to database', config.mongoUrl)
+        console.log('Connected to database: ', config.mongoUrl)
     })
     .catch((err) => {
         console.log(err)
     })
 
-const redisClient = redis.createClient(config.redisUrl)
+const redisClient: redis.RedisClient = redis.createClient(config.redisUrl)
 redisClient.on('error', (err) => {
     console.log(err)
     process.exit(1)
@@ -53,10 +54,10 @@ app.use(express.static('front'))
 app.use('/api/stravaauth', stravaAuthRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
-app.get('*', (req, res) => {
+app.get('*', (req: Request, res: Response) => {
     res.sendFile(path.resolve(__dirname, '../front', 'index.html'));
 })
-const server = http.createServer(app)
+const server: Http2Server = http.createServer(app)
 
 server.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`)

@@ -1,23 +1,23 @@
-import express from 'express'
-const router = express.Router()
+import express, { Router, Request, Response } from 'express'
+const router: Router = express.Router()
 import bcrypt from 'bcrypt'
-import IUser from './../interfaces/IUser'
+import { IUser } from '../types/user'
 
-import User, { IUserDocument } from './../models/user'
+import IUserModel, { IUserDocument } from './../models/user'
 
-router.post('/', async (req, res) => {
-  console.log('Logging in user')
-  console.log(req.session)
-  try {
-    const existingUser: IUserDocument = await User.findOne({ username: req.body.username })
-    let validPasswordHash
-    if (existingUser) { validPasswordHash = existingUser.passwordHash }
-    const user: IUser = existingUser ? User.format(existingUser) : null
-    const correctCreds = user === null ?
-      false :
-      await bcrypt.compare(req.body.password, validPasswordHash)
+router.post('/', async (req: Request, res: Response) => {
+  try {    
+    const existingUser: IUserDocument = await IUserModel.findOne({ username: req.body.username })
 
-    if (!(correctCreds)) {
+    let validPasswordHash: string
+    if (existingUser) { 
+      validPasswordHash = existingUser.passwordHash 
+    }
+    const user: IUser = existingUser ? existingUser.format() : null
+    const isCorrectCreds: boolean = user === null ? false 
+      : await bcrypt.compare(req.body.password, validPasswordHash)
+
+    if (!(isCorrectCreds)) {
       return res.status(401).json({ error: 'invalid username or password' })
     }
     req.session.userId = user.id
@@ -27,17 +27,17 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'something went wrong...' })
   }
 })
-router.get('/currentUser', async (req, res) => {
+router.get('/currentUser', async (req: Request, res: Response) => {
   if (req.session.userId) {
-    const loggedInUser: IUserDocument = await User.findOne({
+    const loggedInUser: IUserDocument = await IUserModel.findOne({
       _id: req.session.userId
     })
-    res.status(200).json(User.format(loggedInUser))
+    res.status(200).json(loggedInUser.format())
     return
   }
   res.status(401).json({ message: 'User not logged in' })
 })
-router.post('/logout', (req, res) => {
+router.post('/logout', (req: Request, res: Response) => {
   req.session.destroy((err) => {
       if (err) {
           return console.log(err);

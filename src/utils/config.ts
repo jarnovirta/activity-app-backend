@@ -4,13 +4,13 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config()
   }
 
-let port = process.env.PORT
-const mongoUrl = process.env.MONGODB_URI
-const secret = process.env.SECRET
-const redisUrl = process.env.REDIS_URL
+let port: number = parseInt(process.env.PORT)
+const mongoUrl: string = process.env.MONGODB_URI
+const secret: string = process.env.SECRET
+const redisUrl: string = process.env.REDIS_URL
 
 if (process.env.NODE_ENV === 'test') {
-    port = process.env.TEST_PORT
+    port = parseInt(process.env.TEST_PORT)
     /* mongoUrl = process.env.TEST_MONGODB_URI */
 
   }

@@ -1,60 +1,51 @@
-import express from 'express'
-const router = express.Router()
+import express, { Router, Request, Response } from 'express'
+const router: Router = express.Router()
 import axios from 'axios'
-import IUser from '../interfaces/IUser'
 import { IUserDocument } from '../models/user'
 import UserModel from '../models/user'
-import IStravaToken from './../interfaces/IStravaToken';
+import IStravaToken, { IStravaTokenResponse, IStravaUser } from '../types/strava-api'
 
-const stravaApiTokenUrl = 'https://www.strava.com/oauth/token'
+const stravaApiTokenUrl: string = 'https://www.strava.com/oauth/token'
 
 interface IReqParams {
   userId: string
 }
-router.get('/authCode/:userId', async (req, res) => {  
-  const code = req.query.code
+router.get('/authCode/:userId', async (req: Request, res: Response) => {  
+  const code:string = req.query.code
   const id: string = (req.params as Partial<IReqParams>).userId
-  const devFrontServer = process.env.DEV_FRONT_SERVER_URL
+  const devFrontServerUrl: string = process.env.DEV_FRONT_SERVER_URL
   try {
-    const tokens = await getStravaTokens(code)
-    const stravaUser: IUser = getUser(tokens)  
+    const response:IStravaTokenResponse = await getStravaTokens(code)
+    const token: IStravaToken = {
+      accessToken: response.access_token,
+      expiresAt: response.expires_at,
+      refreshToken: response.refresh_token
+    }  
     await UserModel.updateOne({ _id: id }, {
-      stravaToken: stravaUser.stravaToken
+      stravaToken: token
     })
   }
   catch (e) {
     console.log(e)
   }
-  const redirectUrl = devFrontServer ? devFrontServer : '/'
+  const redirectUrl: string = devFrontServerUrl ? devFrontServerUrl : '/'
   res.redirect(redirectUrl)
 })
 
-router.get('/redirectUrl', (request, response) => {
-  const url = `${process.env.SERVER_URL}:${process.env.PORT}`
+router.get('/redirectUrl', (req: Request, res: Response) => {
+  const url: string = `${process.env.SERVER_URL}:${process.env.PORT}`
     + `/api/oauth/authCode`
-  response.send(url)
+  res.send(url)
 })
-router.post('/refreshToken', async (request, response) => {
-  const user: IUserDocument = await UserModel.findById(request.body.userId)
+router.post('/refreshToken', async (req: Request, res: Response) => {
+  const user: IUserDocument = await UserModel.findById(req.body.userId)
   const token: IStravaToken = await refreshStravaTokens(user.stravaToken.refreshToken)
   await user.updateOne({
     stravaToken: token
   })
-  response.status(200).json(user.stravaToken)
+  res.status(200).json(user.stravaToken)
 })
 
-const getUser = (stravaTokenResponse: any): IUser => {
-  return {
-    firstName: stravaTokenResponse.athlete.firstname,
-    lastName: stravaTokenResponse.athlete.lastname,
-    stravaToken: {
-      accessToken: stravaTokenResponse.access_token,
-      expiresAt: stravaTokenResponse.expires_at,
-      refreshToken: stravaTokenResponse.refresh_token
-    },
-    username: stravaTokenResponse.athlete.username
-  }
-}
 const getStravaTokens = async (code: string): Promise<any> => {
   const params = {
     client_id: process.env.STRAVA_CLIENT_ID,

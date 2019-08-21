@@ -1,17 +1,9 @@
 import { Document, Model, model, Schema } from 'mongoose'
-import IStravaToken from './../interfaces/IStravaToken'
-import IUser from './../interfaces/IUser'
+import { IUser } from '../types/user'
 
-export interface IUserDocument extends Document {
-  firstName: string,
-  lastName: string,
-  passwordHash?: string,
-  stravaToken: IStravaToken,
-  username: string
-}
-
-interface IUserModel extends Model<IUserDocument> {
-  format(user: IUserDocument): IUser
+export interface IUserDocument extends Pick<IUser, 
+  Exclude<keyof IUser, keyof Document>>, Document {
+  format: () => IUser
 }
 
 const UserSchema: Schema = new Schema({
@@ -21,14 +13,17 @@ const UserSchema: Schema = new Schema({
   stravaToken: { type: Object, required: false },
   username: { type: String, required: true, unique: true }
 })
-
-UserSchema.statics.format = (user: IUserDocument) => {
+UserSchema.method('format', function (): IUser {
   return {
-    firstName: user.firstName,
-    id: user._id,
-    lastName: user.lastName,
-    stravaToken: { ...user.stravaToken, refreshToken: '' },
-    username: user.username
-  }
-}
-export default model<IUserDocument>('User', UserSchema) as IUserModel
+    firstName: this.firstName,
+    id: this._id,
+    lastName: this.lastName,
+    passwordHash: '',
+    stravaToken: { ...this.stravaToken, refreshToken: '' },
+    username: this.username
+  } 
+})
+
+export const User: Model<IUserDocument> = model<IUserDocument>('User', UserSchema)
+
+export default User
